@@ -212,7 +212,7 @@ class i18n {
 		$tmp = '';
 		foreach($ini as $key => $value) {
 			if(is_array($value)) {
-				$tmp .= call_user_func(__METHOD__, $value, $key . $this -> section_seperator);
+				$tmp .= $this->compile_ini($value, $key.$this->section_seperator);
 			} else {
 				$tmp .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
 			}
