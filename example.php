@@ -1,6 +1,6 @@
 <?php
 	// include i18n class and initialize it
-	require_once 'lib/simple-i18n.class.php';
+	require_once 'lib/i18n.class.php';
 	$i18n = new i18n('lang/lang_{LANGUAGE}.ini', 'langcache/', 'en'); 
 	// Parameters: language file path, cache dir, default language (all optional)
 	
@@ -16,4 +16,4 @@
 
 <!-- Get some greetings -->
 <p>A greeting: <?php echo L::greeting; ?></p>
-<p>Another greeting: <?php echo L::category_greeting2; ?></p><!-- normally sections in the ini are seperated with an underscore like here. -->
+<p>Something other: <?php echo L::category_somethingother; ?></p><!-- normally sections in the ini are seperated with an underscore like here. -->
