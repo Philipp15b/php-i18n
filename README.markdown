@@ -59,11 +59,11 @@ The files must be named like the filePath setting, where '{LANGUAGE}' will be re
 ### 4. Set some settings if necessary
 The possible settings are:
 
-1. Language file path (the ini files) (default: `./lang/lang_{LANGUAGE}.ini`)
-2. Cache file path (default: `./langcache/`)
-3. The fallback language, if no one of the user languages is available (default: `en`)
-4. A forced language, if you want to force a language (default: none)
-5. The ini section seperator: this is used to seperate the sections in the language class. If you set the seperator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
+* Language file path (the ini files) (default: `./lang/lang_{LANGUAGE}.ini`)
+* Cache file path (default: `./langcache/`)
+* The fallback language, if no one of the user languages is available (default: `en`)
+* A forced language, if you want to force a language (default: none)
+* The ini section seperator: this is used to seperate the sections in the language class. If you set the seperator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
 
 ```php
 <?php
