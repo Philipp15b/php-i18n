@@ -265,21 +265,28 @@ class i18n {
 
         // Highest priority: forced language
         if($this -> force_lang != NULL) {
-            array_push($userLangs, $this -> force_lang);
+            $userLangs[] = $this->forcedLang;
         }
 
         // 2nd highest priority: GET parameter 'lang'
         if(isset($_GET['lang']) && is_string($_GET['lang'])) {
-            array_push($userLangs, $_GET['lang']);
+            $userLangs[] =  $_GET['lang'];
         }
 
-        // 3rd highest priority: SESSION parameter 'lang'
+        // 3rd highest priority: HTTP_ACCEPT_LANGUAGE
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+          foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
+            $userLangs[] = strtolower(substr($part,0,2));
+          }
+        }
+
+        // 4th highest priority: SESSION parameter 'lang'
         if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
-            array_push($userLangs, $_SESSION['lang']);
+            $userLangs[] = $_SESSION['lang'];
         }
 
         // Lowest priority: fallback
-        array_push($userLangs, $this -> fallbackLang);
+        $userLangs[] = $this->fallbackLang;
 
         // remove duplicate elements
         $userLangs = array_unique($userLangs);
