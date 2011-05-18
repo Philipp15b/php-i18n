@@ -1,4 +1,13 @@
-<?php
+<?php    
+    
+/*
+ * Fork this project on GitHub!
+ * https://github.com/Philipp15b/php-i18n
+ * 
+ * License: Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+ * License URL: http://creativecommons.org/licenses/by-sa/3.0/deed.en
+ */
+
 class i18n {
 
 	/*
@@ -7,11 +16,11 @@ class i18n {
 
 	/**
 	 * Language file path
-	 * This is the path for the language files. You must use the '{LANGUAGE}' placeholder for the language.
+	 * This is the path for the language files. You must use the '{LANGUAGE}' placeholder for the language or the script wont find any language files.
 	 *
 	 * @var string
 	 */
-	protected $filepath = './lang/lang_{LANGUAGE}.ini';
+	protected $filePath = './lang/lang_{LANGUAGE}.ini';
 
 	/**
 	 * Cache file path
@@ -19,7 +28,7 @@ class i18n {
 	 *
 	 * @var string
 	 */
-	protected $cachepath = './langcache/';
+	protected $cachePath = './langcache/';
 
 	/**
 	 * Fallback language
@@ -28,7 +37,7 @@ class i18n {
 	 *
 	 * @type string
 	 */
-	protected $fallback_lang = 'en';
+	protected $fallbackLang = 'en';
 
 	/**
 	 * Forced language
@@ -36,7 +45,7 @@ class i18n {
 	 *
 	 * @type string
 	 */
-	protected $force_lang = NULL;
+	protected $forcedLang = NULL;
 
 	/**
 	 * This is the seperator used if you use sections in your ini-file.
@@ -45,10 +54,12 @@ class i18n {
 	 *
 	 * @var string
 	 */
-	protected $section_seperator = '_';
+	protected $sectionSeperator = '_';
+
 
 	/*
 	 * Runtime needed variables
+     * That means that the contents of the following variables are only available after init().
 	 */
 
 	/**
@@ -62,11 +73,11 @@ class i18n {
 	 *
 	 * @var array
 	 */
-	protected $user_langs = array();
+	protected $userLangs = array();
 
 	/**
 	 * The applied language
-	 * This means the chosen language, which must have an existing ini-file.
+	 * This means the chosen language.
 	 *
 	 * @var NULL, string
 	 */
@@ -87,152 +98,215 @@ class i18n {
 	 * @var string
 	 */
 	protected $cacheFilePath = NULL;
+    
+    /**
+     * Variable to check if the init() method was used.
+     * This is for the methods that set settings that can not be changed after init.
+     * 
+     * @var bool
+     */
+    protected $isInitialized = false;
+
 
 	/**
 	 * Constructor
-	 * The constructor sets all important settings and loads all needed files directly after applying the settings you can set with it. This means that you CAN NOT change a setting after initializing the class.
+	 * The constructor sets all important settings. All params are optional, you can set the options via extra functions too.
 	 *
-	 * @param string [$filepath] This is the path for the language files. You must use the '{LANGUAGE}' placeholder for the language.
-	 * @param string [$cachepath] This is the path for all the cache files. Best is an empty directory with no other files in it. No placeholders.
-	 * @param string [$fallback_lang] This is the language which is used when there is no language file for all other user languages. It has the lowest priority.
-	 * @param string [$force_lang] If you want to force a specific language define it here.
-	 * @param string [$section_seperator] This is the seperator used for sections in your ini-file.
+	 * @param string [$filePath] This is the path for the language files. You must use the '{LANGUAGE}' placeholder for the language.
+	 * @param string [$cachePath] This is the path for all the cache files. Best is an empty directory with no other files in it. No placeholders.
+	 * @param string [$fallbackLang] This is the language which is used when there is no language file for all other user languages. It has the lowest priority.
+	 * @param string [$forcedLang] If you want to force a specific language define it here.
+	 * @param string [$sectionSeperator] This is the seperator used for sections in your ini-file.
 	 */
-	public function __construct($filepath =NULL, $cachepath =NULL, $fallback_lang =NULL, $force_lang =NULL, $section_seperator =NULL) {
+	public function __construct($filePath = NULL, $cachePath = NULL, $fallbackLang = NULL, $forcedLang = NULL, $sectionSeperator = NULL) {
 
 		// Apply settings
-		if($filepath != NULL) {
-			$this -> filepath = $filepath;
+		if($filePath != NULL) {
+			$this -> filePath = $filePath;
 		}
 
-		if($cachepath != NULL) {
-			$this -> cachepath = $cachepath;
+		if($cachePath != NULL) {
+			$this -> cachePath = $cachePath;
 		}
 
-		if($fallback_lang != NULL) {
-			$this -> fallback_lang = $fallback_lang;
+		if($fallbackLang != NULL) {
+			$this -> fallbackLang = $fallbackLang;
 		}
 
-		if($force_lang != NULL) {
-			$this -> force_lang = $force_lang;
+		if($forcedLang != NULL) {
+			$this -> forcedLang = $forcedLang;
 		}
 
-		if($section_seperator != NULL) {
-			$this -> section_seperator = $section_seperator;
+		if($sectionSeperator != NULL) {
+			$this -> sectionSeperator = $sectionSeperator;
 		}
-
-		// set user language
-		$this -> user_langs = $this -> getUserLangs();
-
-		// search for language file
-		$this -> appliedLang = NULL;
-		foreach($this->user_langs as $priority => $langcode) {
-			$this -> langFilePath = str_replace('{LANGUAGE}', $langcode, $this -> filepath);
-			if(file_exists($this -> langFilePath)) {
-				$this -> appliedLang = $langcode;
-				break;
-			}
-		}
-
-		// abort if no language file was found
-		if($this -> appliedLang == NULL) {
-			die('No language file was found.');
-			// TODO: Throw exception or something like that.
-		}
-		// search for cache file
-		$this -> cacheFilePath = $this -> cachepath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this -> appliedLang . '.cache.php';
-
-		// if no cache file exists or if it is older than the language file create a new one
-		if(!file_exists($this -> cacheFilePath) || filemtime($this -> cacheFilePath) < filemtime($this -> langFilePath)) {
-
-			$ini = parse_ini_file($this -> langFilePath, true);
-			$compiled = "<?php class L {\n";
-			$compiled .= $this -> compile_ini($ini);
-			$compiled .= '}';
-
-			file_put_contents($this -> cacheFilePath, $compiled);
-			chmod($this -> cacheFilePath, 0777);
-
-		}
-
-		// include the cache file
-		require_once $this -> cacheFilePath;
+        
+        return $this;
 
 	}
 
-	/**
-	 * getUserLangs()
-	 * Returns the user languages
-	 * Normally it returns an array like this:
-	 * 1. Forced language
-	 * 2. Language in $_GET['lang']
-	 * 3. Language in $_SESSION['lang']
-	 * 4. Fallback language
-	 * Note: duplicate values are deleted.
-	 *
-	 * @return array with the user languages sorted by priority. Highest is best.
-	 */
-	public function getUserLangs() {
+    public function init() {
+        if($this->isInitialized == true) {
+            throw new BadMethodCallException('This object from class '.__CLASS__.' is already initialized. It is not possible to init one object twice!');
+        }    
+            
+        $this->isInitialized = true;
+        
+        // set user language
+        $this->userLangs = $this -> getUserLangs();
 
-		// reset user_lang array
-		$user_langs = array();
+        // search for language file
+        $this -> appliedLang = NULL;
+        foreach($this->userLangs as $priority => $langcode) {
+            $this -> langFilePath = str_replace('{LANGUAGE}', $langcode, $this -> filePath);
+            if(file_exists($this -> langFilePath)) {
+                $this -> appliedLang = $langcode;
+                break;
+            }
+        }
 
-		// Highest priority: forced language
-		if($this -> force_lang != NULL) {
-			array_push($user_langs, $this -> force_lang);
-		}
+        // abort if no language file was found
+        if($this -> appliedLang == NULL) {
+            throw new RuntimeException('No language file was found.');
+        }
+        // search for cache file
+        $this -> cacheFilePath = $this -> cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this -> appliedLang . '.cache.php';
 
-		// 2nd highest priority: GET parameter 'lang'
-		if(isset($_GET['lang']) && is_string($_GET['lang'])) {
-			array_push($user_langs, $_GET['lang']);
-		}
+        // if no cache file exists or if it is older than the language file create a new one
+        if(!file_exists($this -> cacheFilePath) || filemtime($this -> cacheFilePath) < filemtime($this -> langFilePath)) {
 
-		// 3rd highest priority: SESSION parameter 'lang'
-		if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
-			array_push($user_langs, $_SESSION['lang']);
-		}
+            $ini = parse_ini_file($this -> langFilePath, true);
+            $compiled = "<?php class L {\n";
+            $compiled .= $this -> compile_ini($ini);
+            $compiled .= '}';
 
-		// Lowest priority: fallback
-		array_push($user_langs, $this -> fallback_lang);
+            file_put_contents($this -> cacheFilePath, $compiled);
+            chmod($this -> cacheFilePath, 0777);
 
-		// remove duplicate elements
-		$user_langs = array_unique($user_langs);
+        }
 
-		return $user_langs;
-	}
+        // include the cache file
+        require_once $this -> cacheFilePath;
 
-	/**
-	 * Parse an ini file to PHP code.
-	 * This method parses a an the array expression from an ini to PHP code.
-	 * To be specific it only returns some lines with 'const ###### = '#######;'
-	 *
-	 * @return string the PHP code
-	 */
-	public function compile_ini($ini, $prefix ='') {
-		$tmp = '';
-		foreach($ini as $key => $value) {
-			if(is_array($value)) {
-				$tmp .= $this->compile_ini($value, $key.$this->section_seperator);
-			} else {
-				$tmp .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
-			}
-		}
-		return $tmp;
-	}
+    }
+
+    public function isInitialized() {
+        return $this->isInitialized;
+    }
 
 	public function getAppliedLang() {
 		return $this->appliedLang;
 	}
 	
 	public function getCachePath() {
-		return $this->cachepath;
+		return $this->cachePath;
 	}
 	
 	public function getFallbackLang() {
-		return $this->fallback_lang;
+		return $this->fallbackLang;
 	}
-	
-	
+    
+    public function setFilePath($filePath) {
+        if($this->isInitialized() == true) {
+            $this->filePath = $filePath;
+        } else {
+            throw new BadMethodCallException('This '.__CLASS__.' object is already initalized, so you can not change the file path setting.');
+        }
+    }
+    
+    public function setCachePath($cachePath) {
+        if($this->isInitialized() == true) {
+            $this->cachePath = $cachePath;
+        } else {
+            throw new BadMethodCallException('This '.__CLASS__.' object is already initalized, so you can not change the cache path setting.');
+        }
+    }
+    
+    public function setFallbackLang($fallbackLang) {
+        if($this->isInitialized() == true) {
+            $this->fallbackLang = $fallbackLang;
+        } else {
+            throw new BadMethodCallException('This '.__CLASS__.' object is already initalized, so you can not change the fallback language setting.');
+        }
+    }
+    
+    public function setForcedLang($forcedLang) {
+        if($this->isInitialized() == true) {
+            $this->forcedLang = $forcedLang;
+        } else {
+            throw new BadMethodCallException('This '.__CLASS__.' object is already initalized, so you can not change the forced language setting.');
+        }
+    }
+    
+    public function setSectionSeperator($sectionSeperator) {
+        if($this->isInitialized() == true) {
+            $this->sectionSeperator = $sectionSeperator;
+        } else {
+            throw new BadMethodCallException('This '.__CLASS__.' object is already initalized, so you can not change the section seperator setting.');
+        }
+    }
+    
+    /**
+     * getUserLangs()
+     * Returns the user languages
+     * Normally it returns an array like this:
+     * 1. Forced language
+     * 2. Language in $_GET['lang']
+     * 3. Language in $_SESSION['lang']
+     * 4. Fallback language
+     * Note: duplicate values are deleted.
+     *
+     * @return array with the user languages sorted by priority. Highest is best.
+     */
+    public function getUserLangs() {
+
+        // reset user_lang array
+        $userLangs = array();
+
+        // Highest priority: forced language
+        if($this -> force_lang != NULL) {
+            array_push($userLangs, $this -> force_lang);
+        }
+
+        // 2nd highest priority: GET parameter 'lang'
+        if(isset($_GET['lang']) && is_string($_GET['lang'])) {
+            array_push($userLangs, $_GET['lang']);
+        }
+
+        // 3rd highest priority: SESSION parameter 'lang'
+        if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
+            array_push($userLangs, $_SESSION['lang']);
+        }
+
+        // Lowest priority: fallback
+        array_push($userLangs, $this -> fallbackLang);
+
+        // remove duplicate elements
+        $userLangs = array_unique($userLangs);
+
+        return $userLangs;
+    }
+    
+    
+    /**
+     * Parse an ini file to PHP code.
+     * This method parses a an the array expression from an ini to PHP code.
+     * To be specific it only returns some lines with 'const ###### = '#######;'
+     *
+     * @return string the PHP code
+     */
+    public function compile_ini($ini, $prefix ='') {
+        $tmp = '';
+        foreach($ini as $key => $value) {
+            if(is_array($value)) {
+                $tmp .= $this->compile_ini($value, $key.$this->sectionSeperator);
+            } else {
+                $tmp .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
+            }
+        }
+        return $tmp;
+    }
+
 
 }
 ?>
