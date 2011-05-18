@@ -20,15 +20,19 @@ To use the i18n class, look at the example.php. You will find there a simple tut
 
 ### 1. Include the class
 ```php
-require_once 'lib/simple-i18n.class.php';
+<?php
+	require_once 'lib/simple-i18n.class.php';
+?>
 ```
 
 ### 2. Initialize the class
 ```php
-$i18n = new i18n();
+<?php
+	$i18n = new i18n();
+?>
 ```
 
-### 3. Set some settings if neccessary
+### 3. Set some settings if necessary
 The possible settings are:
 
 1. Language file path (the ini files) (default: `./lang/lang_{LANGUAGE}.ini`)
@@ -38,18 +42,24 @@ The possible settings are:
 5. The ini section seperator: this is used to seperate the sections in the language class. If you set the seperator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
 
 ```php
-$i18n->setCachePath('./tmp/cache');
-$i18n->setFilePath('./langfiles'); // language file path (the ini files)
-$i18n->setFallbackLang('en');
-$i18n->setForcedLang('en') // force english, even if another user language is available
-$i18n->setSectionSeperator('_');
+<?php
+	$i18n->setCachePath('./tmp/cache');
+	$i18n->setFilePath('./langfiles'); // language file path (the ini files)
+	$i18n->setFallbackLang('en');
+	$i18n->setForcedLang('en') // force english, even if another user language is available
+	$i18n->setSectionSeperator('_');
+?>
 ```
 
 #### Shorthand
 There is also a shorthand for that: you can set all settings in the constructor!
+
 ```php
-$i18n = new i18n('lang/lang_{LANGUAGE}.ini', 'langcache/', 'en');
+<?php
+	$i18n = new i18n('lang/lang_{LANGUAGE}.ini', 'langcache/', 'en');
+?>
 ```
+
 The parameters are:
 
 1. the language file path (the ini files)
@@ -64,14 +74,18 @@ The parameters are:
 Call the `init()` file to instruct the class to load the needed language file, to load the cache file or generate it  if it is not available and make the `L` class available so you can access your localizations.
 
 ```php
-$i18n->init();
+<?php
+	$i18n->init();
+?>
 ```
 
 ### 5. Use the localizations
 To call your localizations, simple use the `L` class and a class constant for the string.
 
 ```php
-echo L::category_stringname;
+<?php
+	echo L::category_stringname;
+?>
 ```
 
 Thats it!
