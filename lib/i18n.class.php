@@ -252,8 +252,9 @@ class i18n {
      * Normally it returns an array like this:
      * 1. Forced language
      * 2. Language in $_GET['lang']
-     * 3. Language in $_SESSION['lang']
-     * 4. Fallback language
+     * 3. HTTP_ACCEPT_LANGUAGE
+     * 4. Language in $_SESSION['lang']
+     * 5. Fallback language
      * Note: duplicate values are deleted.
      *
      * @return array with the user languages sorted by priority. Highest is best.
@@ -290,6 +291,11 @@ class i18n {
 
         // remove duplicate elements
         $userLangs = array_unique($userLangs);
+        
+        // remove not allowed characters
+        foreach($userLangs as  $key => $value) {
+            $userLangs[$key] = preg_replace('/[^a-zA-Z0-9]/','', $value); // only allow a-z, A-Z and 0-9
+        }
 
         return $userLangs;
     }
