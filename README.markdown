@@ -129,10 +129,11 @@ This class tries to find out the user language by generating a queue of the foll
 4. HTTP_ACCEPT_LANGUAGE (can be multiple languages) (`$_SERVER['HTTP_ACCEPT_LANGUAGE']`)
 5. Fallback language
 
-First it will remove duplicate elements and then it searches for the language files. For example, if you set the GET parameter 'lang' to 'en' without a forced language set, the class would try to find the file `lang/lang_en.ini` (if the langFilePath was set to default (`lang/lang_{LANGUAGE}.ini`)).
+First it will remove duplicate elements and then it will replace all characters that are not A-Z, a-z or 0-9. 
+After that it searches for the language files. For example, if you set the GET parameter 'lang' to 'en' without a forced language set, the class would try to find the file `lang/lang_en.ini` (if the setting `langFilePath` was set to default (`lang/lang_{LANGUAGE}.ini`)).
 If this file was not there, it would try to find the language file for the language defined in the session and so on.
 
-### How to change that
+### How to change this implementation
 You can change this 'algorithm' by extending the i18n class. You could do it like that:
 
 ```php
@@ -143,9 +144,9 @@ You can change this 'algorithm' by extending the i18n class. You could do it lik
 		public function getUserLangs() {
 			$userLangs = new array();
 
-			array_push($userLangs, $_GET['language']);
+			$userLangs[] = $_GET['language'];
 
-			array_push($userLangs, $_SESSION['userlanguage']);
+			$userLangs[] = $_SESSION['userlanguage'];
 
 			return $userLangs;
 		}
@@ -160,7 +161,7 @@ You can change this 'algorithm' by extending the i18n class. You could do it lik
 This very basic extension of the i18n class replaces the default implementation of the `getUserLangs()`-method and only uses the GET parameter 'language' and the session parameter 'userlanguage'.
 You see that this method must return an array.
 
-Note that this is script insecure. Dont use it in a production environment! You should escape the GET parameter and so on.
+Note that this is script insecure. Dont use it in a production environment! You should escape all user data!
 
 ## Fork it!
 Please fork this project and help me with the development.
