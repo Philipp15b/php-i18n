@@ -252,8 +252,8 @@ class i18n {
      * Normally it returns an array like this:
      * 1. Forced language
      * 2. Language in $_GET['lang']
-     * 3. HTTP_ACCEPT_LANGUAGE
-     * 4. Language in $_SESSION['lang']
+     * 3. Language in $_SESSION['lang']
+     * 4. HTTP_ACCEPT_LANGUAGE
      * 5. Fallback language
      * Note: duplicate values are deleted.
      *
@@ -274,16 +274,16 @@ class i18n {
             $userLangs[] =  $_GET['lang'];
         }
 
-        // 3rd highest priority: HTTP_ACCEPT_LANGUAGE
+		// 3rd highest priority: SESSION parameter 'lang'
+        if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
+            $userLangs[] = $_SESSION['lang'];
+        }
+		
+        // 4th highest priority: HTTP_ACCEPT_LANGUAGE
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
           foreach (explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
             $userLangs[] = strtolower(substr($part,0,2));
           }
-        }
-
-        // 4th highest priority: SESSION parameter 'lang'
-        if(isset($_SESSION['lang']) && is_string($_SESSION['lang'])) {
-            $userLangs[] = $_SESSION['lang'];
         }
 
         // Lowest priority: fallback
