@@ -16,7 +16,7 @@ Some of its features:
 * PHP SPL extension (installed by default)
 
 ## Setup
-To use the i18n class, look at the example.php. You will find there a simple tutorial for this class in the file. Otherwise follow this easy five steps:
+To use the i18n class, look at the example.php. You will find there a simple tutorial for this class in the file. Otherwise follow these easy five steps:
 
 ### 1. Create language files
 To use this class, you have to use ini files for the translated strings. This could look like this:
