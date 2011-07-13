@@ -4,3 +4,4 @@
 
 # ignore language cache too
 langcache/*
+!langcache/README.md
