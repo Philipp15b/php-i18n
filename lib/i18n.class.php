@@ -265,7 +265,7 @@ class i18n {
         $userLangs = array();
 
         // Highest priority: forced language
-        if($this -> force_lang != NULL) {
+        if($this ->forcedLang != NULL) {
             $userLangs[] = $this->forcedLang;
         }
 
