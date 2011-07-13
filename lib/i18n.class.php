@@ -122,23 +122,23 @@ class i18n {
 
 		// Apply settings
 		if($filePath != NULL) {
-			$this -> filePath = $filePath;
+			$this->filePath = $filePath;
 		}
 
 		if($cachePath != NULL) {
-			$this -> cachePath = $cachePath;
+			$this->cachePath = $cachePath;
 		}
 
 		if($fallbackLang != NULL) {
-			$this -> fallbackLang = $fallbackLang;
+			$this->fallbackLang = $fallbackLang;
 		}
 
 		if($forcedLang != NULL) {
-			$this -> forcedLang = $forcedLang;
+			$this->forcedLang = $forcedLang;
 		}
 
 		if($sectionSeperator != NULL) {
-			$this -> sectionSeperator = $sectionSeperator;
+			$this->sectionSeperator = $sectionSeperator;
 		}
         
         return $this;
@@ -153,40 +153,40 @@ class i18n {
         $this->isInitialized = true;
         
         // set user language
-        $this->userLangs = $this -> getUserLangs();
+        $this->userLangs = $this->getUserLangs();
 
         // search for language file
-        $this -> appliedLang = NULL;
+        $this->appliedLang = NULL;
         foreach($this->userLangs as $priority => $langcode) {
-            $this -> langFilePath = str_replace('{LANGUAGE}', $langcode, $this -> filePath);
-            if(file_exists($this -> langFilePath)) {
-                $this -> appliedLang = $langcode;
+            $this->langFilePath = str_replace('{LANGUAGE}', $langcode, $this->filePath);
+            if(file_exists($this->langFilePath)) {
+                $this->appliedLang = $langcode;
                 break;
             }
         }
 
         // abort if no language file was found
-        if($this -> appliedLang == NULL) {
+        if($this->appliedLang == NULL) {
             throw new RuntimeException('No language file was found.');
         }
         // search for cache file
-        $this -> cacheFilePath = $this -> cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this -> appliedLang . '.cache.php';
+        $this->cacheFilePath = $this->cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this->appliedLang . '.cache.php';
 
         // if no cache file exists or if it is older than the language file create a new one
-        if(!file_exists($this -> cacheFilePath) || filemtime($this -> cacheFilePath) < filemtime($this -> langFilePath)) {
+        if(!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
 
-            $ini = parse_ini_file($this -> langFilePath, true);
+            $ini = parse_ini_file($this->langFilePath, true);
             $compiled = "<?php class L {\n";
-            $compiled .= $this -> compile_ini($ini);
+            $compiled .= $this->compile_ini($ini);
             $compiled .= '}';
 
-            file_put_contents($this -> cacheFilePath, $compiled);
-            chmod($this -> cacheFilePath, 0777);
+            file_put_contents($this->cacheFilePath, $compiled);
+            chmod($this->cacheFilePath, 0777);
 
         }
 
         // include the cache file
-        require_once $this -> cacheFilePath;
+        require_once $this->cacheFilePath;
 
     }
 
