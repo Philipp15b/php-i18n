@@ -8,6 +8,8 @@
  * License URL: http://creativecommons.org/licenses/by-sa/3.0/deed.en
  */
 
+require_once 'spyc.php';
+ 
 class i18n {
 
 	/*
@@ -175,9 +177,19 @@ class i18n {
         // if no cache file exists or if it is older than the language file create a new one
         if(!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
 
-            $ini = parse_ini_file($this->langFilePath, true);
+            switch ($this->get_file_extension()) {
+              case 'ini':
+                $ini = parse_ini_file($this->langFilePath, true);
+                break;
+              case 'yml':
+                $ini = spyc_load_file($this->langFilePath);
+                break;
+              default:
+                $ini = array();
+            }
+            
             $compiled = "<?php class L {\n";
-            $compiled .= $this->compile_ini($ini);
+            $compiled .= $this->compile($ini);
             $compiled .= '}';
 
             file_put_contents($this->cacheFilePath, $compiled);
@@ -302,22 +314,26 @@ class i18n {
     
     
     /**
-     * Parse an ini file to PHP code.
+     * Parse an ini or yml file to PHP code.
      * This method parses a an the array expression from an ini to PHP code.
      * To be specific it only returns some lines with 'const ###### = '#######;'
      *
      * @return string the PHP code
      */
-    public function compile_ini($ini, $prefix ='') {
+    public function compile($ini, $prefix ='') {
         $tmp = '';
         foreach($ini as $key => $value) {
             if(is_array($value)) {
-                $tmp .= $this->compile_ini($value, $key.$this->sectionSeperator);
+                $tmp .= $this->compile($value, $key.$this->sectionSeperator);
             } else {
                 $tmp .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
             }
         }
         return $tmp;
+    }
+    
+    public function get_file_extension() {
+      return substr(strrchr($this->langFilePath,'.'),1);
     }
 
 
