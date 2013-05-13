@@ -175,7 +175,7 @@ class i18n {
                     $config = spyc_load_file($this->langFilePath);
                     break;
                 default:
-                    $config = array();
+                    throw new InvalidArgumentException($this->get_file_extension() . " is not a valid extension!");
             }
 
             $compiled = "<?php class L {\n";
