@@ -39,13 +39,13 @@ greeting = "Hallo Welt!"
 somethingother = "Etwas anderes..."
 ```
 
-Save both files in the directory you will set in step 4. 
+Save both files in the directory you will set in step 4.
 The files must be named like the filePath setting, where '{LANGUAGE}' will be replaced by the chosen language, e.g. 'en' or 'de'.
 
 ### 2. Include the class
 ```php
 <?php
-	require_once 'lib/i18n.class.php';
+	require_once 'i18n.class.php';
 ?>
 ```
 
@@ -129,7 +129,7 @@ This class tries to find out the user language by generating a queue of the foll
 4. HTTP_ACCEPT_LANGUAGE (can be multiple languages) (`$_SERVER['HTTP_ACCEPT_LANGUAGE']`)
 5. Fallback language
 
-First it will remove duplicate elements and then it will replace all characters that are not A-Z, a-z or 0-9. 
+First it will remove duplicate elements and then it will replace all characters that are not A-Z, a-z or 0-9.
 After that it searches for the language files. For example, if you set the GET parameter 'lang' to 'en' without a forced language set, the class would try to find the file `lang/lang_en.ini` (if the setting `langFilePath` was set to default (`lang/lang_{LANGUAGE}.ini`)).
 If this file was not there, it would try to find the language file for the language defined in the session and so on.
 
@@ -137,10 +137,10 @@ If this file was not there, it would try to find the language file for the langu
 You can change this 'algorithm' by extending the i18n class. You could do it like that:
 
 ```php
-<?php	
-	require_once 'lib/i18n.class.php';
+<?php
+	require_once 'i18n.class.php';
 	class My_i18n extends i18n {
-		
+
 		public function getUserLangs() {
 			$userLangs = new array();
 
