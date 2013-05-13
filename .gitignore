@@ -1,7 +1,2 @@
-# ignore eclipse project files
-.project
-.settings
-
-# ignore language cache too
 langcache/*
 !langcache/README.md
