@@ -31,15 +31,21 @@ class i18n {
      * This is the language which is used when there is no language file for all other user languages. It has the lowest priority.
      * Remember to create a language file for the fallback!!
      *
-     * @type string
+     * @var string
      */
     protected $fallbackLang = 'en';
+
+    /**
+     * The class name of the compiled class that contains the translated texts.
+     * @var string
+     */
+    protected $prefix = 'L';
 
     /**
      * Forced language
      * If you want to force a specific language define it here.
      *
-     * @type string
+     * @var string
      */
     protected $forcedLang = NULL;
 
@@ -70,36 +76,9 @@ class i18n {
      */
     protected $userLangs = array();
 
-    /**
-     * The applied language
-     * This means the chosen language.
-     *
-     * @var NULL, string
-     */
     protected $appliedLang = NULL;
-
-    /**
-     * Language file path
-     * This is the path for the used language file. Computed automatically.
-     *
-     * @var string
-     */
     protected $langFilePath = NULL;
-
-    /**
-     * Cache file path
-     * This is the path for the used cache file. Computed automatically.
-     *
-     * @var string
-     */
     protected $cacheFilePath = NULL;
-
-    /**
-     * Variable to check if the init() method was used.
-     * This is for the methods that set settings that can not be changed after init.
-     *
-     * @var bool
-     */
     protected $isInitialized = false;
 
 
@@ -110,10 +89,9 @@ class i18n {
      * @param string [$filePath] This is the path for the language files. You must use the '{LANGUAGE}' placeholder for the language.
      * @param string [$cachePath] This is the path for all the cache files. Best is an empty directory with no other files in it. No placeholders.
      * @param string [$fallbackLang] This is the language which is used when there is no language file for all other user languages. It has the lowest priority.
-     * @param string [$forcedLang] If you want to force a specific language define it here.
-     * @param string [$sectionSeperator] This is the seperator used for sections in your ini-file.
+     * @param string [$prefix] The class name of the compiled class that contains the translated texts. Defaults to 'L'.
      */
-    public function __construct($filePath = NULL, $cachePath = NULL, $fallbackLang = NULL, $forcedLang = NULL, $sectionSeperator = NULL) {
+    public function __construct($filePath = NULL, $cachePath = NULL, $fallbackLang = NULL, $prefix = NULL) {
         // Apply settings
         if ($filePath != NULL) {
             $this->filePath = $filePath;
@@ -127,16 +105,9 @@ class i18n {
             $this->fallbackLang = $fallbackLang;
         }
 
-        if ($forcedLang != NULL) {
-            $this->forcedLang = $forcedLang;
+        if ($prefix != NULL) {
+            $this->prefix = $prefix;
         }
-
-        if ($sectionSeperator != NULL) {
-            $this->sectionSeperator = $sectionSeperator;
-        }
-
-        return $this;
-
     }
 
     public function init() {
@@ -178,7 +149,7 @@ class i18n {
                     throw new InvalidArgumentException($this->get_file_extension() . " is not a valid extension!");
             }
 
-            $compiled = "<?php class L {\n";
+            $compiled = "<?php class " . $this->prefix . " {\n";
             $compiled .= $this->compile($config);
             $compiled .= '}';
 
@@ -219,6 +190,11 @@ class i18n {
     public function setFallbackLang($fallbackLang) {
         $this->fail_after_init();
         $this->fallbackLang = $fallbackLang;
+    }
+
+    public function setPrefix($prefix) {
+        $this->fail_after_init();
+        $this->prefix = $prefix;
     }
 
     public function setForcedLang($forcedLang) {
@@ -275,7 +251,6 @@ class i18n {
         // remove duplicate elements
         $userLangs = array_unique($userLangs);
 
-        // remove not allowed characters
         foreach ($userLangs as $key => $value) {
             $userLangs[$key] = preg_replace('/[^a-zA-Z0-9]/', '', $value); // only allow a-z, A-Z and 0-9
         }
