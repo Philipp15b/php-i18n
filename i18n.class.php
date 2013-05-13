@@ -11,9 +11,6 @@
 require_once 'vendor/spyc.php';
 
 class i18n {
-    /*
-     * Editable settings via constructor
-     */
 
     /**
      * Language file path
@@ -59,8 +56,7 @@ class i18n {
 
 
     /*
-     * Runtime needed variables
-     * That means that the contents of the following variables are only available after init().
+     * The following properties are only available after calling init().
      */
 
     /**
@@ -146,13 +142,12 @@ class i18n {
     }
 
     public function init() {
-        if ($this->isInitialized == true) {
+        if ($this->isInitialized()) {
             throw new BadMethodCallException('This object from class ' . __CLASS__ . ' is already initialized. It is not possible to init one object twice!');
         }
 
         $this->isInitialized = true;
 
-        // set user language
         $this->userLangs = $this->getUserLangs();
 
         // search for language file
@@ -164,11 +159,10 @@ class i18n {
                 break;
             }
         }
-
-        // abort if no language file was found
         if ($this->appliedLang == NULL) {
             throw new RuntimeException('No language file was found.');
         }
+
         // search for cache file
         $this->cacheFilePath = $this->cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this->appliedLang . '.cache.php';
 
@@ -176,17 +170,17 @@ class i18n {
         if (!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
             switch ($this->get_file_extension()) {
                 case 'ini':
-                    $ini = parse_ini_file($this->langFilePath, true);
+                    $config = parse_ini_file($this->langFilePath, true);
                     break;
                 case 'yml':
-                    $ini = spyc_load_file($this->langFilePath);
+                    $config = spyc_load_file($this->langFilePath);
                     break;
                 default:
-                    $ini = array();
+                    $config = array();
             }
 
             $compiled = "<?php class L {\n";
-            $compiled .= $this->compile($ini);
+            $compiled .= $this->compile($config);
             $compiled .= '}';
 
             file_put_contents($this->cacheFilePath, $compiled);
@@ -194,9 +188,7 @@ class i18n {
 
         }
 
-        // include the cache file
         require_once $this->cacheFilePath;
-
     }
 
     public function isInitialized() {
@@ -216,43 +208,28 @@ class i18n {
     }
 
     public function setFilePath($filePath) {
-        if ($this->isInitialized() == true) {
-            $this->filePath = $filePath;
-        } else {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change the file path setting.');
-        }
+        $this->fail_after_init();
+        $this->filePath = $filePath;
     }
 
     public function setCachePath($cachePath) {
-        if ($this->isInitialized() == true) {
-            $this->cachePath = $cachePath;
-        } else {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change the cache path setting.');
-        }
+        $this->fail_after_init();
+        $this->cachePath = $cachePath;
     }
 
     public function setFallbackLang($fallbackLang) {
-        if ($this->isInitialized() == true) {
-            $this->fallbackLang = $fallbackLang;
-        } else {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change the fallback language setting.');
-        }
+        $this->fail_after_init();
+        $this->fallbackLang = $fallbackLang;
     }
 
     public function setForcedLang($forcedLang) {
-        if ($this->isInitialized() == true) {
-            $this->forcedLang = $forcedLang;
-        } else {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change the forced language setting.');
-        }
+        $this->fail_after_init();
+        $this->forcedLang = $forcedLang;
     }
 
     public function setSectionSeperator($sectionSeperator) {
-        if ($this->isInitialized() == true) {
-            $this->sectionSeperator = $sectionSeperator;
-        } else {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change the section seperator setting.');
-        }
+        $this->fail_after_init();
+        $this->sectionSeperator = $sectionSeperator;
     }
 
     /**
@@ -266,10 +243,9 @@ class i18n {
      * 5. Fallback language
      * Note: duplicate values are deleted.
      *
-     * @return array with the user languages sorted by priority. Highest is best.
+     * @return array with the user languages sorted by priority.
      */
     public function getUserLangs() {
-        // reset user_lang array
         $userLangs = array();
 
         // Highest priority: forced language
@@ -310,27 +286,28 @@ class i18n {
 
 
     /**
-     * Parse an ini or yml file to PHP code.
-     * This method parses a an the array expression from an ini to PHP code.
-     * To be specific it only returns some lines with 'const ###### = '#######;'
-     *
-     * @return string the PHP code
+     * Recursively compile an associative array to PHP code.
      */
-    public function compile($ini, $prefix = '') {
-        $tmp = '';
-        foreach ($ini as $key => $value) {
+    protected function compile($config, $prefix = '') {
+        $code = '';
+        foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $tmp .= $this->compile($value, $key . $this->sectionSeperator);
+                $code .= $this->compile($value, $key . $this->sectionSeperator);
             } else {
-                $tmp .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
+                $code .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
             }
         }
-        return $tmp;
+        return $code;
     }
 
-    public function get_file_extension() {
+    protected function get_file_extension() {
         return substr(strrchr($this->langFilePath, '.'), 1);
     }
 
+    protected function fail_after_init() {
+        if ($this->isInitialized()) {
+            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
+        }
+    }
 
 }
