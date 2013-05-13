@@ -8,8 +8,6 @@
  * License URL: http://creativecommons.org/licenses/by-sa/3.0/deed.en
  */
 
-require_once 'vendor/spyc.php';
-
 class i18n {
 
     /**
@@ -173,6 +171,7 @@ class i18n {
                     $config = parse_ini_file($this->langFilePath, true);
                     break;
                 case 'yml':
+                    require_once 'vendor/spyc.php';
                     $config = spyc_load_file($this->langFilePath);
                     break;
                 default:
