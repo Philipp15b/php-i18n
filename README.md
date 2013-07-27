@@ -69,7 +69,7 @@ The possible settings are:
 ```php
 <?php
 	$i18n->setCachePath('./tmp/cache');
-	$i18n->setFilePath('./langfiles'); // language file path (the ini files)
+	$i18n->setFilePath('./langfiles/lang/lang_{LANGUAGE}.ini'); // language file path
 	$i18n->setFallbackLang('en');
 	$i18n->setPrefix('I');
 	$i18n->setForcedLang('en') // force english, even if another user language is available
