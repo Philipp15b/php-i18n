@@ -266,7 +266,7 @@ class i18n {
         $code = '';
         foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $code .= $this->compile($value, $key . $this->sectionSeperator);
+                $code .= $this->compile($value, $prefix . $key . $this->sectionSeperator);
             } else {
                 $code .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
             }
