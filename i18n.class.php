@@ -151,7 +151,9 @@ class i18n {
 
             $compiled = "<?php class " . $this->prefix . " {\n";
             $compiled .= $this->compile($config);
-            $compiled .= '}';
+            $compiled .= 'public static function __callStatic($string, $args) {' . "\n";
+            $compiled .= 'vprintf(constant("self::" . $string), $args);' . "\n";
+            $compiled .= "}\n}";
 
             file_put_contents($this->cacheFilePath, $compiled);
             chmod($this->cacheFilePath, 0777);
