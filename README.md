@@ -6,6 +6,7 @@ Some of its features:
 * Translations in ini-files
 * File caching
 * Simple API (`L::category_stringname`)
+* Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting (`L::name($par1)`)
 * Automatic finding out what language to use
 * Simplicity ;)
 
@@ -114,8 +115,13 @@ In this example, we use the translation string seen in step 1.
 
 	echo L::category_somethingother;
 	// If 'en' is applied: 'Something other...'
+  
+	echo L::last_modified("today");
+	// Could be: 'Last modified: today'
 ?>
 ```
+
+As you can see, you can also call the constant as a function. It will be formatted with [vprintf](http://php.net/manual/en/function.vprintf.php).
 
 Thats it!
 
