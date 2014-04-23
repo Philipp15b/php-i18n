@@ -254,7 +254,7 @@ class i18n {
         $userLangs = array_unique($userLangs);
 
         foreach ($userLangs as $key => $value) {
-            $userLangs[$key] = preg_replace('/[^a-zA-Z0-9]/', '', $value); // only allow a-z, A-Z and 0-9
+            $userLangs[$key] = preg_replace('/[^a-zA-Z0-9_-]/', '', $value); // only allow a-z, A-Z and 0-9
         }
 
         return $userLangs;
