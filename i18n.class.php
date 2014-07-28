@@ -158,9 +158,15 @@ class i18n {
             $compiled .= 'vprintf(constant("self::" . $string), $args);' . "\n";
             $compiled .= "}\n}";
 
-            file_put_contents($this->cacheFilePath, $compiled);
-            chmod($this->cacheFilePath, 0777);
+            if (!is_writable($this->cachePath)) {
+                throw new Exception('Cache path not writable.');
+            }
 
+            if (file_put_contents($this->cacheFilePath, $compiled)) {
+                chmod($this->cacheFilePath, 0777);
+            } else {
+                throw new RuntimeException('Could not create cache file.');
+            }
         }
 
         require_once $this->cacheFilePath;
