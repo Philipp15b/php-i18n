@@ -3,7 +3,7 @@ This is a simple i18n class for PHP. Nothing fancy, but fast, because it uses ca
 
 Some of its features:
 
-* Translations in ini-files
+* Translations in `.ini`, `.json` or `.yaml` format
 * File caching
 * Simple API (`L::category_stringname`)
 * Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting (`L::name($par1)`)
