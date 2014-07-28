@@ -145,6 +145,9 @@ class i18n {
                     require_once 'vendor/spyc.php';
                     $config = spyc_load_file($this->langFilePath);
                     break;
+                case 'json':
+                    $config = json_decode(file_get_contents($this->langFilePath), true);
+                    break;
                 default:
                     throw new InvalidArgumentException($this->get_file_extension() . " is not a valid extension!");
             }
