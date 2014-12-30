@@ -1,2 +1,2 @@
 # Cache folder
-Make sure you have write pernissions here!
+Make sure you have write permissions here!
