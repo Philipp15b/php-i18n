@@ -155,7 +155,7 @@ class i18n {
             $compiled = "<?php class " . $this->prefix . " {\n";
             $compiled .= $this->compile($config);
             $compiled .= 'public static function __callStatic($string, $args) {' . "\n";
-            $compiled .= 'vsprintf(constant("self::" . $string), $args);' . "\n";
+            $compiled .= '    return vsprintf(constant("self::" . $string), $args);' . "\n";
             $compiled .= "}\n}";
 
             if (file_put_contents($this->cacheFilePath, $compiled) === FALSE) {
