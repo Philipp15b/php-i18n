@@ -1,6 +1,8 @@
 <?php
-	// include i18n class and initialize it
-	require_once 'i18n.class.php';
+	require_once("vendor/autoload.php");
+
+	use i18n\i18n;
+
 	$i18n = new i18n('lang/lang_{LANGUAGE}.ini', 'langcache/', 'en');
 	// Parameters: language file path, cache dir, default language (all optional)
 
