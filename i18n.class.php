@@ -1,5 +1,9 @@
 <?php
 
+namespace Philipp15b;
+
+use Spyc;
+
 /*
  * Fork this project on GitHub!
  * https://github.com/Philipp15b/php-i18n
@@ -122,7 +126,7 @@ class i18n {
         // search for language file
         $this->appliedLang = NULL;
         foreach ($this->userLangs as $priority => $langcode) {
-            $this->langFilePath = str_replace('{LANGUAGE}', $langcode, $this->filePath);
+            $this->langFilePath = self::getLangFilePath($langcode, $this->filePath);
             if (file_exists($this->langFilePath)) {
                 $this->appliedLang = $langcode;
                 break;
@@ -137,19 +141,13 @@ class i18n {
 
         // if no cache file exists or if it is older than the language file create a new one
         if (!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
-            switch ($this->get_file_extension()) {
-                case 'ini':
-                    $config = parse_ini_file($this->langFilePath, true);
-                    break;
-                case 'yml':
-                    require_once 'vendor/spyc.php';
-                    $config = spyc_load_file($this->langFilePath);
-                    break;
-                case 'json':
-                    $config = json_decode(file_get_contents($this->langFilePath), true);
-                    break;
-                default:
-                    throw new InvalidArgumentException($this->get_file_extension() . " is not a valid extension!");
+
+            $config = $this->parseLangFile($this->langFilePath);
+
+            // if our applied language and fallback are different merge the applied over the default to avoid errors
+            if ($this->appliedLang !== $this->fallbackLang) {
+                $base_config = $this->parseLangFile(self::getLangFilePath($this->fallbackLang, $this->filePath));
+                $config = array_merge($base_config, $config);
             }
 
             $compiled = "<?php class " . $this->prefix . " {\n";
@@ -167,7 +165,37 @@ class i18n {
 
         require_once $this->cacheFilePath;
     }
+    
+    private function parseLangFile($langFilePath)
+    {
+        $extension = self::parseFilePathExtension($langFilePath);
+        switch ($this->get_file_extension()) {
+            case 'ini':
+                $config = parse_ini_file($langFilePath, true);
+                break;
+            case 'yml':
+                $config = Spyc::YAMLLoad($langFilePath);
+                break;
+            case 'json':
+                $config = json_decode(file_get_contents($langFilePath), true);
+                break;
+            default:
+                throw new InvalidArgumentException($extension . " is not a valid extension!");
+        }
 
+        return $config;
+
+    }
+    
+    public static function getLangFilePath($langCode, $filePath)
+    {
+        return str_replace('{LANGUAGE}', $langCode, $filePath);
+    }
+
+    public static function parseFilePathExtension($langFilePath) {
+        return pathinfo($langFilePath, PATHINFO_EXTENSION);
+    }
+    
     public function isInitialized() {
         return $this->isInitialized;
     }
@@ -227,7 +255,7 @@ class i18n {
      *
      * @return array with the user languages sorted by priority.
      */
-    public function getUserLangs() {
+   public function getUserLangs() {
         $userLangs = array();
 
         // Highest priority: forced language
@@ -248,7 +276,7 @@ class i18n {
         // 4th highest priority: HTTP_ACCEPT_LANGUAGE
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
-                $userLangs[] = strtolower(substr($part, 0, 2));
+                $userLangs[] = self::parseLangCode($part);
             }
         }
 
@@ -263,6 +291,18 @@ class i18n {
         }
 
         return $userLangs;
+    }
+
+    public static function parseLangCode($langCode)
+    {
+        $langCode = strtolower($langCode);
+        if(preg_match("/([\w]{2}(\-[\w]{2})*)/i", $langCode, $matches)){
+            $langCode = $matches[0];
+        }else{
+            $langCode = substr($langCode, 0, 2);
+        }
+
+        return $langCode;
     }
 
 
