@@ -78,9 +78,9 @@ class i18n {
      *
      * @var array
      */
-    protected $userLangs = array();
+    protected $userLangs = [];
 
-    protected $appliedLang = NULL;
+    protected $appliedLangs = [];
     protected $langFilePath = NULL;
     protected $cacheFilePath = NULL;
     protected $isInitialized = false;
@@ -121,33 +121,19 @@ class i18n {
 
         $this->isInitialized = true;
 
-        $this->userLangs = $this->getUserLangs();
-
-        // search for language file
-        $this->appliedLang = NULL;
-        foreach ($this->userLangs as $priority => $langcode) {
-            $this->langFilePath = self::getLangFilePath($langcode, $this->filePath);
-            if (file_exists($this->langFilePath)) {
-                $this->appliedLang = $langcode;
-                break;
-            }
-        }
-        if ($this->appliedLang == NULL) {
-            throw new RuntimeException('No language file was found.');
-        }
+        $appliedLang = $this->loadValidLangs();
 
         // search for cache file
-        $this->cacheFilePath = $this->cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $this->appliedLang . '.cache.php';
+        $this->cacheFilePath = $this->cachePath . '/php_i18n_' . md5_file(__FILE__) . '_' . $appliedLang . '.cache.php';
 
         // if no cache file exists or if it is older than the language file create a new one
         if (!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
 
-            $config = $this->parseLangFile($this->langFilePath);
-
-            // if our applied language and fallback are different merge the applied over the default to avoid errors
-            if ($this->appliedLang !== $this->fallbackLang) {
-                $base_config = $this->parseLangFile(self::getLangFilePath($this->fallbackLang, $this->filePath));
-                $config = array_merge($base_config, $config);
+            $reversed = array_reverse($this->appliedLangs);
+            $config = [];
+            foreach ($reversed as $langCode) {
+                $new_config = self::parseLangFile(self::getLangFilePath($langCode, $this->filePath));
+                $config = array_merge($config, $new_config);
             }
 
             $compiled = "<?php class " . $this->prefix . " {\n";
@@ -166,10 +152,10 @@ class i18n {
         require_once $this->cacheFilePath;
     }
     
-    private function parseLangFile($langFilePath)
+    private static function parseLangFile($langFilePath)
     {
         $extension = self::parseFilePathExtension($langFilePath);
-        switch ($this->get_file_extension()) {
+        switch ($extension) {
             case 'ini':
                 $config = parse_ini_file($langFilePath, true);
                 break;
@@ -251,6 +237,7 @@ class i18n {
      * 3. Language in $_SESSION['lang']
      * 4. HTTP_ACCEPT_LANGUAGE
      * 5. Fallback language
+     * 6. Parent Language
      * Note: duplicate values are deleted.
      *
      * @return array with the user languages sorted by priority.
@@ -276,7 +263,8 @@ class i18n {
         // 4th highest priority: HTTP_ACCEPT_LANGUAGE
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
-                $userLangs[] = self::parseLangCode($part);
+                $userLangs[] = self::parseLangCode($part, $parent);
+                $userLangs[] = $parent;
             }
         }
 
@@ -293,11 +281,12 @@ class i18n {
         return $userLangs;
     }
 
-    public static function parseLangCode($langCode)
+    public static function parseLangCode($langCode, &$parentLangCode = null)
     {
         $langCode = strtolower($langCode);
         if(preg_match("/([\w]{2}(\-[\w]{2})*)/i", $langCode, $matches)){
             $langCode = $matches[0];
+            $parentLangCode = $matches[2];
         }else{
             $langCode = substr($langCode, 0, 2);
         }
@@ -329,6 +318,27 @@ class i18n {
         if ($this->isInitialized()) {
             throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
         }
+    }
+
+    private function loadValidLangs()
+    {
+        $this->userLangs = $this->getUserLangs();
+
+        // search for language file
+        $this->appliedLangs = [];
+
+        foreach ($this->userLangs as $priority => $langcode) {
+            $langFilePath = self::getLangFilePath($langcode, $this->filePath);
+            if (file_exists($langFilePath)) {
+                $this->appliedLangs[] = $langcode;
+            }
+        }
+        if (empty($this->appliedLangs)) {
+            throw new RuntimeException('No language file was found.');
+        }
+
+        // return the first lang in the set for the cache file name
+        return $this->appliedLangs[0];
     }
 
 }
