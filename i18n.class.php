@@ -116,7 +116,7 @@ class i18n {
 
     public function init() {
         if ($this->isInitialized()) {
-            throw new BadMethodCallException('This object from class ' . __CLASS__ . ' is already initialized. It is not possible to init one object twice!');
+            throw new \BadMethodCallException('This object from class ' . __CLASS__ . ' is already initialized. It is not possible to init one object twice!');
         }
 
         $this->isInitialized = true;
@@ -143,7 +143,7 @@ class i18n {
             $compiled .= "}\n}";
 
             if (file_put_contents($this->cacheFilePath, $compiled) === FALSE) {
-                throw new Exception("Could not write cache file to path '" . $this->cacheFilePath . "'. Is it writable?");
+                throw new \Exception("Could not write cache file to path '" . $this->cacheFilePath . "'. Is it writable?");
             }
             chmod($this->cacheFilePath, 0777);
 
@@ -166,7 +166,7 @@ class i18n {
                 $config = json_decode(file_get_contents($langFilePath), true);
                 break;
             default:
-                throw new InvalidArgumentException($extension . " is not a valid extension!");
+                throw new \InvalidArgumentException($extension . " is not a valid extension!");
         }
 
         return $config;
@@ -316,7 +316,7 @@ class i18n {
 
     protected function fail_after_init() {
         if ($this->isInitialized()) {
-            throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
+            throw new \BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
         }
     }
 
@@ -334,7 +334,7 @@ class i18n {
             }
         }
         if (empty($this->appliedLangs)) {
-            throw new RuntimeException('No language file was found.');
+            throw new \RuntimeException('No language file was found.');
         }
 
         // return the first lang in the set for the cache file name
