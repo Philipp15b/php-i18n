@@ -142,7 +142,8 @@ class i18n {
                     $config = parse_ini_file($this->langFilePath, true);
                     break;
                 case 'yml':
-                    require_once 'vendor/spyc.php';
+                    if( ! class_exists('Spyc') )
+                        require_once 'vendor/spyc.php';
                     $config = spyc_load_file($this->langFilePath);
                     break;
                 case 'json':
