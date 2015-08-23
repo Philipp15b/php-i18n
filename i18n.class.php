@@ -284,7 +284,7 @@ class i18n {
     public static function parseLangCode($langCode, &$parentLangCode = null)
     {
         $langCode = strtolower($langCode);
-        if(preg_match("/([\w]{2}(\-[\w]{2})*)/i", $langCode, $matches)){
+        if(preg_match("/(([\w]{2})\-([\w]{2}))/i", $langCode, $matches)){
             $langCode = $matches[0];
             $parentLangCode = $matches[2];
         }else{
