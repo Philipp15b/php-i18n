@@ -142,7 +142,8 @@ class i18n {
                     $config = parse_ini_file($this->langFilePath, true);
                     break;
                 case 'yml':
-                    require_once 'vendor/spyc.php';
+                    if( ! class_exists('Spyc') )
+                        require_once 'vendor/spyc.php';
                     $config = spyc_load_file($this->langFilePath);
                     break;
                 case 'json':
@@ -158,6 +159,9 @@ class i18n {
             $compiled .= '    return vsprintf(constant("self::" . $string), $args);' . "\n";
             $compiled .= "}\n}";
 
+			if( ! is_dir($this->cachePath))
+				mkdir($this->cachePath,0777,true);
+			
             if (file_put_contents($this->cacheFilePath, $compiled) === FALSE) {
                 throw new Exception("Could not write cache file to path '" . $this->cacheFilePath . "'. Is it writable?");
             }
