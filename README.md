@@ -3,24 +3,26 @@ This is a simple i18n class for PHP. Nothing fancy, but fast, because it uses ca
 
 Some of its features:
 
-* Translations in `.ini`, `.json` or `.yaml` format
-* File caching
-* Simple API (`L::category_stringname`)
-* Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting (`L::name($par1)`)
-* Automatic finding out what language to use
+* Translation strings in `.ini`/`.properties`, `.json` or `.yaml` format
+* Caching
+* Simple API: `L::category_stringname`
+* Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting: `L::name($par1)`
+* Automatic user language detection
 * Simplicity ;)
 
 ## Requirements
 
 * Write permissions in cache directory
-* PHP 5.2 (only tested with this version, it maybe runs with other versions too)
+* PHP 5.2 and above
 * PHP SPL extension (installed by default)
 
 ## Setup
-To use the i18n class, look at the example.php. You will find there a simple tutorial for this class in the file. Otherwise follow these easy five steps:
+
+There's a usable example in the `example.php` file. You just have to follow these easy five steps:
 
 ### 1. Create language files
-To use this class, you have to use ini files for the translated strings. This could look like this:
+
+To use this class, you need to create translation files with your translated strings. They can be `.ini`/`.properties`, `.json` or `.yaml` files. This could look like this:
 
 `lang_en.ini` (English)
 
@@ -41,9 +43,10 @@ somethingother = "Etwas anderes..."
 ```
 
 Save both files in the directory you will set in step 4.
-The files must be named like the filePath setting, where '{LANGUAGE}' will be replaced by the chosen language, e.g. 'en' or 'de'.
+The files must be named according to the filePath setting, where '{LANGUAGE}' will be replaced by the user's language, e.g. 'en' or 'de'.
 
 ### 2. Include the class
+
 ```php
 <?php
 	require_once 'i18n.class.php';
@@ -58,9 +61,10 @@ The files must be named like the filePath setting, where '{LANGUAGE}' will be re
 ```
 
 ### 4. Set some settings if necessary
+
 The possible settings are:
 
-* Language file path (the ini files) (default: `./lang/lang_{LANGUAGE}.ini`)
+* Language file path (default: `./lang/lang_{LANGUAGE}.ini`)
 * Cache file path (default: `./langcache/`)
 * The fallback language, if no one of the user languages is available (default: `en`)
 * A 'prefix', the compiled class name (default `L`)
@@ -79,7 +83,8 @@ The possible settings are:
 ```
 
 #### Shorthand
-There is also a shorthand for that: you can set all settings in the constructor!
+
+There is also a shorthand for that: you can set all settings in the constructor.
 
 ```php
 <?php
@@ -87,7 +92,7 @@ There is also a shorthand for that: you can set all settings in the constructor!
 ?>
 ```
 
-The (optional) parameters are:
+The (all optional) parameters are:
 
 1. the language file path (the ini files)
 2. the language cache path
@@ -95,7 +100,8 @@ The (optional) parameters are:
 4. the prefix/compiled class name
 
 ### 5. Call the `init()` method to load all files and translations
-Call the `init()` file to instruct the class to load the needed language file, to load the cache file or generate it  if it is not available and make the `L` class available so you can access your localizations.
+
+Call the `init()` file to instruct the class to load the appropriate language file, load the cache file or generate it if it doesn't exist and make the `L` class available so you can access your localizations.
 
 ```php
 <?php
@@ -104,6 +110,7 @@ Call the `init()` file to instruct the class to load the needed language file, t
 ```
 
 ### 6. Use the localizations
+
 To call your localizations, simple use the `L` class and a class constant for the string.
 
 In this example, we use the translation string seen in step 1.
@@ -125,8 +132,9 @@ As you can see, you can also call the constant as a function. It will be formatt
 
 Thats it!
 
-## How it finds out the user language
-This class tries to find out the user language by generating a queue of the following things:
+## How the user language detection works
+
+This class tries to detect the user's language by trying the following sources in this order:
 
 1. Forced language (if set)
 2. GET parameter 'lang' (`$_GET['lang']`)
@@ -134,12 +142,13 @@ This class tries to find out the user language by generating a queue of the foll
 4. HTTP_ACCEPT_LANGUAGE (can be multiple languages) (`$_SERVER['HTTP_ACCEPT_LANGUAGE']`)
 5. Fallback language
 
-First it will remove duplicate elements and then it will replace all characters that are not A-Z, a-z or 0-9.
-After that it searches for the language files. For example, if you set the GET parameter 'lang' to 'en' without a forced language set, the class would try to find the file `lang/lang_en.ini` (if the setting `langFilePath` was set to default (`lang/lang_{LANGUAGE}.ini`)).
-If this file was not there, it would try to find the language file for the language defined in the session and so on.
+php-i18n will remove all characters that are not one of the following: A-Z, a-z or 0-9 to prevent [arbitrary file inclusion](https://en.wikipedia.org/wiki/File_inclusion_vulnerability).
+After that the class searches for the language files. For example, if you set the GET parameter 'lang' to 'en' without a forced language set, the class would try to find the file `lang/lang_en.ini` (if the setting `langFilePath` was set to default (`lang/lang_{LANGUAGE}.ini`)).
+If this file doesn't exist, php-i18n will try to find the language file for the language defined in the session variable and so on.
 
 ### How to change this implementation
-You can change this 'algorithm' by extending the i18n class. You could do it like that:
+
+You can change the user detection by extending the `i18n` class and overriding the `getUserLangs()` method:
 
 ```php
 <?php
@@ -163,10 +172,10 @@ You can change this 'algorithm' by extending the i18n class. You could do it lik
 ?>
 ```
 
-This very basic extension of the i18n class replaces the default implementation of the `getUserLangs()`-method and only uses the GET parameter 'language' and the session parameter 'userlanguage'.
+This very basic extension only uses the GET parameter 'language' and the session parameter 'userlanguage'.
 You see that this method must return an array.
 
-**Note that this example function is insecure**: `getUserLangs()` also has to escape the results or else i18n will load every file!
+**Note that this example function is insecure**: `getUserLangs()` also has to escape the results or else i18n will [include arbitrary files](https://en.wikipedia.org/wiki/File_inclusion_vulnerability). The default implementation is safe.
 
 ## Fork it!
 
