@@ -111,7 +111,7 @@ Call the `init()` file to instruct the class to load the appropriate language fi
 
 ### 6. Use the localizations
 
-To call your localizations, simple use the `L` class and a class constant for the string.
+To call your localizations, simply use the `L` class and a class constant for the string.
 
 In this example, we use the translation string seen in step 1.
 
