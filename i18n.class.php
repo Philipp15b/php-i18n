@@ -138,6 +138,7 @@ class i18n {
         // if no cache file exists or if it is older than the language file create a new one
         if (!file_exists($this->cacheFilePath) || filemtime($this->cacheFilePath) < filemtime($this->langFilePath)) {
             switch ($this->get_file_extension()) {
+                case 'properties':
                 case 'ini':
                     $config = parse_ini_file($this->langFilePath, true);
                     break;
