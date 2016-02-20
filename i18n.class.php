@@ -154,14 +154,15 @@ class i18n {
                     throw new InvalidArgumentException($this->get_file_extension() . " is not a valid extension!");
             }
 
-            $compiled = "<?php class " . $this->prefix . " {\n";
-            $compiled .= $this->compile($config);
-            $compiled .= 'public static function __callStatic($string, $args) {' . "\n";
-            $compiled .= '    return vsprintf(constant("self::" . $string), $args);' . "\n";
-            $compiled .= "}\n}\n";
-            $compiled .="function ".$this->prefix .'($string,$args=NULL{'."\n";
-            $compiled .='    $return=constant("'.$this->prefix.'::".$string);'."\n";
-            $compiled .='    return $args ? vsprintf($return,$args) : $return;'."\n}";
+            $compiled = "<?php class " . $this->prefix . " {\n"
+            	. $this->compile($config)
+            	. 'public static function __callStatic($string, $args) {' . "\n"
+            	. '    return vsprintf(constant("self::" . $string), $args);'
+            	. "\n}\n}\n"
+            	. "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+            	. '    $return = constant("'.$this->prefix.'::".$string);'."\n"
+            	. '    return $args ? vsprintf($return,$args) : $return;'
+            	. "\n}";
 
 			if( ! is_dir($this->cachePath))
 				mkdir($this->cachePath,0777,true);
