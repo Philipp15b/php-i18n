@@ -6,7 +6,7 @@ Some of its features:
 * Translation strings in `.ini`/`.properties`, `.json` or `.yaml` format
 * Caching
 * Simple API: `L::category_stringname`
-* Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting: `L::name($par1)`
+* Built-in support for [vsprintf](http://php.net/manual/en/function.vsprintf.php) formatting: `L::name($par1)`
 * Automatic user language detection
 * Simplicity ;)
 
