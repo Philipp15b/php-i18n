@@ -158,7 +158,11 @@ class i18n {
             $compiled .= $this->compile($config);
             $compiled .= 'public static function __callStatic($string, $args) {' . "\n";
             $compiled .= '    return vsprintf(constant("self::" . $string), $args);' . "\n";
-            $compiled .= "}\n}";
+            $compiled .= "}\n}\n";
+            $compiled .="function ".$this->prefix ."(){\n";
+            $compiled .='    $args=func_get_args();$string=array_shift($args);'."\n";
+            $compiled .='    $return=constant("'.$this->prefix.'::".$string);'."\n";
+            $compiled .='    return $args ? vsprintf($return,$args) : $return;'."\n}";
 
 			if( ! is_dir($this->cachePath))
 				mkdir($this->cachePath,0777,true);
