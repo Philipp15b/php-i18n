@@ -119,16 +119,25 @@ In this example, we use the translation string seen in step 1.
 <?php
 	echo L::greeting;
 	// If 'en' is applied: 'Hello World'
-
+	
 	echo L::category_somethingother;
 	// If 'en' is applied: 'Something other...'
-  
+	
 	echo L::last_modified("today");
 	// Could be: 'Last modified: today'
+	
+	echo L($string);
+	// Outputs a dynamically chosen static property
+	
+	echo L($string, $args);
+	// Same as L::last_modified("today");
+	
 ?>
 ```
 
-As you can see, you can also call the constant as a function. It will be formatted with [vprintf](http://php.net/manual/en/function.vprintf.php).
+As you can see, you can also call the constant as a function. It will be formatted with [vsprintf](http://php.net/manual/en/function.vsprintf.php).
+
+A helper function with the same name as the class help access the constants dynamically if ever need.
 
 Thats it!
 
