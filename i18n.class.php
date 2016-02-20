@@ -159,7 +159,7 @@ class i18n {
             $compiled .= 'public static function __callStatic($string, $args) {' . "\n";
             $compiled .= '    return vsprintf(constant("self::" . $string), $args);' . "\n";
             $compiled .= "}\n}\n";
-            $compiled .="function ".$this->prefix .'($string,$args){'."\n";
+            $compiled .="function ".$this->prefix .'($string,$args=NULL{'."\n";
             $compiled .='    $return=constant("'.$this->prefix.'::".$string);'."\n";
             $compiled .='    return $args ? vsprintf($return,$args) : $return;'."\n}";
 
