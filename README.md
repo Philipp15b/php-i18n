@@ -137,7 +137,7 @@ In this example, we use the translation string seen in step 1.
 
 As you can see, you can also call the constant as a function. It will be formatted with [vsprintf](http://php.net/manual/en/function.vsprintf.php).
 
-A helper function with the same name as the class help access the constants dynamically if ever need.
+Also, like in the two last examples, a helper function with the same name as the class makes it easier to dynamically access the constants if ever needed.
 
 Thats it!
 
