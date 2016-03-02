@@ -6,7 +6,7 @@ Some of its features:
 * Translation strings in `.ini`/`.properties`, `.json` or `.yaml` format
 * Caching
 * Simple API: `L::category_stringname`
-* Built-in support for [vprintf](http://php.net/manual/en/function.vprintf.php) formatting: `L::name($par1)`
+* Built-in support for [vsprintf](http://php.net/manual/en/function.vsprintf.php) formatting: `L::name($par1)`
 * Automatic user language detection
 * Simplicity ;)
 
@@ -119,16 +119,25 @@ In this example, we use the translation string seen in step 1.
 <?php
 	echo L::greeting;
 	// If 'en' is applied: 'Hello World'
-
+	
 	echo L::category_somethingother;
 	// If 'en' is applied: 'Something other...'
-  
+	
 	echo L::last_modified("today");
 	// Could be: 'Last modified: today'
+	
+	echo L($string);
+	// Outputs a dynamically chosen static property
+	
+	echo L($string, $args);
+	// Same as L::last_modified("today");
+	
 ?>
 ```
 
-As you can see, you can also call the constant as a function. It will be formatted with [vprintf](http://php.net/manual/en/function.vprintf.php).
+As you can see, you can also call the constant as a function. It will be formatted with [vsprintf](http://php.net/manual/en/function.vsprintf.php).
+
+Also, like in the two last examples, a helper function with the same name as the class makes it easier to dynamically access the constants if ever needed.
 
 Thats it!
 
