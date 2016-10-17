@@ -155,18 +155,19 @@ class i18n {
             }
 
             $compiled = "<?php class " . $this->prefix . " {\n"
-            	. $this->compile($config)
-            	. 'public static function __callStatic($string, $args) {' . "\n"
-            	. '    return vsprintf(constant("self::" . $string), $args);'
-            	. "\n}\n}\n"
-            	. "function ".$this->prefix .'($string, $args=NULL) {'."\n"
-            	. '    $return = constant("'.$this->prefix.'::".$string);'."\n"
-            	. '    return $args ? vsprintf($return,$args) : $return;'
-            	. "\n}";
+                . $this->compile($config)
+                . 'public static function __callStatic($string, $args) {' . "\n"
+                . '    return vsprintf(constant("self::" . $string), $args);'
+                . "\n}\n}\n"
+                . "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+                . '    $return = constant("'.$this->prefix.'::".$string);'."\n"
+                . '    return $args ? vsprintf($return,$args) : $return;'
+                . "\n}";
 
-			if( ! is_dir($this->cachePath))
-				mkdir($this->cachePath,0777,true);
-			
+            if (!is_dir($this->cachePath)) {
+                mkdir($this->cachePath,0777,true);
+            }
+
             if (file_put_contents($this->cacheFilePath, $compiled) === FALSE) {
                 throw new Exception("Could not write cache file to path '" . $this->cacheFilePath . "'. Is it writable?");
             }
