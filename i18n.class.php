@@ -157,9 +157,12 @@ class i18n {
             $compiled = "<?php class " . $this->prefix . " {\n"
                 . $this->compile($config)
                 . 'public static function __callStatic($string, $args) {' . "\n"
-                . '    return vsprintf(constant("self::" . $string), $args);'
+                . '    return defined("self::".$string) ? vsprintf(constant("self::" . $string), $args) : $string;'
                 . "\n}\n}\n"
                 . "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+                . '    if (!defined("'.$this->prefix.'::".$string)) {'."\n"
+                . '        return $string;'."\n"
+                . '    }'."\n"
                 . '    $return = constant("'.$this->prefix.'::".$string);'."\n"
                 . '    return $args ? vsprintf($return,$args) : $return;'
                 . "\n}";
