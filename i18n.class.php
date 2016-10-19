@@ -271,11 +271,15 @@ class i18n {
         // remove duplicate elements
         $userLangs = array_unique($userLangs);
 
+        // remove illegal userLangs
+        $userLangs2 = array();
         foreach ($userLangs as $key => $value) {
-            $userLangs[$key] = preg_replace('/[^a-zA-Z0-9_-]/', '', $value); // only allow a-z, A-Z and 0-9
+            // only allow a-z, A-Z and 0-9 and _ and -
+            if (preg_match('/^[a-zA-Z0-9_-]*$/', $value) === 1)
+                $userLangs2[$key] = $value;
         }
 
-        return $userLangs;
+        return $userLangs2;
     }
 
     protected function getConfigFilename($langcode) {
