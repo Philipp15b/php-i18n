@@ -164,12 +164,12 @@ class i18n {
             	. "\n}";
 
 			if( ! is_dir($this->cachePath))
-				mkdir($this->cachePath,0777,true);
+				mkdir($this->cachePath, 0755, true);
 
             if (file_put_contents($this->cacheFilePath, $compiled) === FALSE) {
                 throw new Exception("Could not write cache file to path '" . $this->cacheFilePath . "'. Is it writable?");
             }
-            chmod($this->cacheFilePath, 0777);
+            chmod($this->cacheFilePath, 0755);
 
         }
 
