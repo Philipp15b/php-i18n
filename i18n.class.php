@@ -4,8 +4,7 @@
  * Fork this project on GitHub!
  * https://github.com/Philipp15b/php-i18n
  *
- * License: Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
- * License URL: http://creativecommons.org/licenses/by-sa/3.0/deed.en
+ * License: MIT
  */
 
 class i18n {
