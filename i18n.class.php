@@ -150,7 +150,7 @@ class i18n {
         if ($outdated) {
             $config = $this->load($this->langFilePath);
             if ($this->mergeFallback)
-                self::array_extend($config, $this->load($this->getConfigFilename($this->fallbackLang)));
+                $config = self::array_extend($config, $this->load($this->getConfigFilename($this->fallbackLang)));
 
             $compiled = "<?php class " . $this->prefix . " {\n"
             	. $this->compile($config)
@@ -290,15 +290,15 @@ class i18n {
         switch ($ext) {
             case 'properties':
             case 'ini':
-                $config = parse_ini_file($this->langFilePath, true);
+                $config = parse_ini_file($filename, true);
                 break;
             case 'yml':
                 if( ! class_exists('Spyc') )
                     require_once 'vendor/spyc.php';
-                $config = spyc_load_file($this->langFilePath);
+                $config = spyc_load_file($filename);
                 break;
             case 'json':
-                $config = json_decode(file_get_contents($this->langFilePath), true);
+                $config = json_decode(file_get_contents($filename), true);
                 break;
             default:
                 throw new InvalidArgumentException($ext . " is not a valid extension!");
@@ -329,9 +329,12 @@ class i18n {
 
     // Something of a sane version of PHP's array_merge
     private static function array_extend($a, $b) {
-        foreach ($b as $key => $value)
-            if (!array_key_exists($key, $a))
+        foreach ($b as $key => $value) {
+            if (!array_key_exists($key, $a)) {
                 $a[$key] = $value;
+            }
+        }
+        return $a;
     }
 
 }
