@@ -332,9 +332,9 @@ class i18n {
         foreach ($b as $key => $value) {
             if (!array_key_exists($key, $a)) {
                 $a[$key] = $value;
-	    }
-	}
-	return $a
+	        }
+        }
+	   return $a;
     }
 
 }
