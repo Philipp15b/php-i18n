@@ -1,4 +1,5 @@
 <?php
+namespace i18n;
 
 /*
  * Fork this project on GitHub!
