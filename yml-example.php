@@ -1,6 +1,12 @@
 <?php
-	// include i18n class and initialize it
+	// Load dependencies
+	require __DIR__ . '/vendor/autoload.php';
+
+	// Include the i18n class. In a separate project this step is not needed since
+	// it will be loaded by the auto loader above
 	require_once 'i18n.class.php';
+
+	// Initialize the i18n class
 	$i18n = new i18n('lang/lang_{LANGUAGE}.yml', 'langcache/', 'en');
 	// Parameters: language file path, cache dir, default language (all optional)
 
