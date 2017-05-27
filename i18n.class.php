@@ -332,7 +332,9 @@ class i18n {
         foreach ($b as $key => $value) {
             if (!array_key_exists($key, $a)) {
                 $a[$key] = $value;
-	        }
+            } else if (is_array($value)) {
+                $a[$key] = self::array_extend($a[$key], $value);
+            }
         }
 	   return $a;
     }
