@@ -150,7 +150,7 @@ class i18n {
         if ($outdated) {
             $config = $this->load($this->langFilePath);
             if ($this->mergeFallback)
-                $config = self::array_extend($config, $this->load($this->getConfigFilename($this->fallbackLang)));
+                $config = array_replace_recursive($this->load($this->getConfigFilename($this->fallbackLang)), $config);
 
             $compiled = "<?php class " . $this->prefix . " {\n"
             	. $this->compile($config)
@@ -326,15 +326,3 @@ class i18n {
             throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
         }
     }
-
-    // Something of a sane version of PHP's array_merge
-    private static function array_extend($a, $b) {
-        foreach ($b as $key => $value) {
-            if (!array_key_exists($key, $a)) {
-                $a[$key] = $value;
-	        }
-        }
-	   return $a;
-    }
-
-}
