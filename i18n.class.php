@@ -326,3 +326,4 @@ class i18n {
             throw new BadMethodCallException('This ' . __CLASS__ . ' object is already initalized, so you can not change any settings.');
         }
     }
+}
