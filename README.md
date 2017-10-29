@@ -69,7 +69,7 @@ The possible settings are:
 * The fallback language, if no one of the user languages is available (default: `en`)
 * A 'prefix', the compiled class name (default `L`)
 * A forced language, if you want to force a language (default: none)
-* The section seperator: this is used to seperate the sections in the language class. If you set the seperator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
+* The section separator: this is used to seperate the sections in the language class. If you set the separator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
 * Merge keys from the fallback language into the current language
 
 ```php
