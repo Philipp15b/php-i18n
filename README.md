@@ -78,7 +78,7 @@ The possible settings are:
 	$i18n->setFilePath('./langfiles/lang/lang_{LANGUAGE}.ini'); // language file path
 	$i18n->setFallbackLang('en');
 	$i18n->setPrefix('I');
-	$i18n->setForcedLang('en') // force english, even if another user language is available
+	$i18n->setForcedLang('en'); // force english, even if another user language is available
 	$i18n->setSectionSeperator('_');
 	$i18n->setMergeFallback(false); // make keys available from the fallback language
 ?>
