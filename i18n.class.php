@@ -315,7 +315,12 @@ class i18n {
             if (is_array($value)) {
                 $code .= $this->compile($value, $prefix . $key . $this->sectionSeperator);
             } else {
-                $code .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
+                $linePrefix = "";
+                $varName = $prefix . $key;
+                if(!preg_match('@^([a-z_][a-z0-9_]*)$@is', $varName)){
+                    $linePrefix = "//";
+                }
+                $code .= $linePrefix . 'const ' . $varName . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
             }
         }
         return $code;
