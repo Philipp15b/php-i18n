@@ -313,7 +313,11 @@ class i18n {
             if (is_array($value)) {
                 $code .= $this->compile($value, $prefix . $key . $this->sectionSeperator);
             } else {
-                $code .= 'const ' . $prefix . $key . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
+                $fullName = $prefix . $key;
+                if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $fullName)) {
+                    throw new InvalidArgumentException(__CLASS__ . ": Cannot compile translation key " . $fullName . " because it is not a valid PHP identifier.");
+                }
+                $code .= 'const ' . $fullName . ' = \'' . str_replace('\'', '\\\'', $value) . "';\n";
             }
         }
         return $code;
