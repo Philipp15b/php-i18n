@@ -1,4 +1,7 @@
 # PHP i18n
+
+[![Latest Stable Version](https://poser.pugx.org/philipp15b/php-i18n/v/stable)](https://packagist.org/packages/philipp15b/php-i18n) [![Build Status](https://travis-ci.org/Philipp15b/php-i18n.svg?branch=master)](https://travis-ci.org/Philipp15b/php-i18n)
+
 This is a simple i18n class for PHP. Nothing fancy, but fast, because it uses caching and it is easy to use. Try it out!
 
 Some of its features:
