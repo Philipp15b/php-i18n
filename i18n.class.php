@@ -57,13 +57,13 @@ class i18n {
     protected $forcedLang = NULL;
 
     /**
-     * This is the seperator used if you use sections in your ini-file.
+     * This is the separator used if you use sections in your ini-file.
      * For example, if you have a string 'greeting' in a section 'welcomepage' you will can access it via 'L::welcomepage_greeting'.
      * If you changed it to 'ABC' you could access your string via 'L::welcomepageABCgreeting'
      *
      * @var string
      */
-    protected $sectionSeperator = '_';
+    protected $sectionSeparator = '_';
 
 
     /*
@@ -221,9 +221,16 @@ class i18n {
         $this->forcedLang = $forcedLang;
     }
 
-    public function setSectionSeperator($sectionSeperator) {
+    public function setSectionSeparator($sectionSeparator) {
         $this->fail_after_init();
-        $this->sectionSeperator = $sectionSeperator;
+        $this->sectionSeparator = $sectionSeparator;
+    }
+
+    /**
+     * @deprecated Use setSectionSeparator.
+     */
+    public function setSectionSeperator($sectionSeparator) {
+        $this->setSectionSeparator($setSectionSeparator);
     }
 
     /**
@@ -311,7 +318,7 @@ class i18n {
         $code = '';
         foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $code .= $this->compile($value, $prefix . $key . $this->sectionSeperator);
+                $code .= $this->compile($value, $prefix . $key . $this->sectionSeparator);
             } else {
                 $fullName = $prefix . $key;
                 if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $fullName)) {

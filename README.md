@@ -69,7 +69,7 @@ The possible settings are:
 * The fallback language, if no one of the user languages is available (default: `en`)
 * A 'prefix', the compiled class name (default `L`)
 * A forced language, if you want to force a language (default: none)
-* The section seperator: this is used to seperate the sections in the language class. If you set the seperator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
+* The section separator: this is used to seperate the sections in the language class. If you set the separator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
 * Merge keys from the fallback language into the current language
 
 ```php
@@ -79,7 +79,7 @@ The possible settings are:
 	$i18n->setFallbackLang('en');
 	$i18n->setPrefix('I');
 	$i18n->setForcedLang('en'); // force english, even if another user language is available
-	$i18n->setSectionSeperator('_');
+	$i18n->setSectionSeparator('_');
 	$i18n->setMergeFallback(false); // make keys available from the fallback language
 ?>
 ```
@@ -121,19 +121,19 @@ In this example, we use the translation string seen in step 1.
 <?php
 	echo L::greeting;
 	// If 'en' is applied: 'Hello World'
-	
+
 	echo L::category_somethingother;
 	// If 'en' is applied: 'Something other...'
-	
+
 	echo L::last_modified("today");
 	// Could be: 'Last modified: today'
-	
+
 	echo L($string);
 	// Outputs a dynamically chosen static property
-	
+
 	echo L($string, $args);
 	// Same as L::last_modified("today");
-	
+
 ?>
 ```
 
