@@ -9,12 +9,15 @@
         "files": [ "i18n.class.php" ]
     },
     "description": "Simple i18n class for PHP",
-    "license": "CC BY-SA 3.0",
+    "license": "MIT",
     "name": "philipp15b/php-i18n",
     "homepage": "https://github.com/Philipp15b/php-i18n",
     "support": {
         "issues": "https://github.com/Philipp15b/php-i18n/issues",
         "source": "https://github.com/Philipp15b/php-i18n"
     },
-    "type": "library"
+    "type": "library",
+    "require": {
+        "mustangostang/spyc": "0.6.2"
+    }
 }
