@@ -230,7 +230,7 @@ class i18n {
      * @deprecated Use setSectionSeparator.
      */
     public function setSectionSeperator($sectionSeparator) {
-        $this->setSectionSeparator($setSectionSeparator);
+        $this->setSectionSeparator($sectionSeparator);
     }
 
     /**
