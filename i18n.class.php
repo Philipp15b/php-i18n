@@ -300,6 +300,7 @@ class i18n {
                 $config = parse_ini_file($filename, true);
                 break;
             case 'yml':
+            case 'yaml':
                 $config = spyc_load_file($filename);
                 break;
             case 'json':
