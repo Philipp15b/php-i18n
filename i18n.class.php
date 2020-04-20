@@ -77,7 +77,9 @@ class i18n {
      * 1. Forced language
      * 2. Language in $_GET['lang']
      * 3. Language in $_SESSION['lang']
-     * 4. Fallback language
+     * 4. HTTP_ACCEPT_LANGUAGE
+     * 5. Language in $_COOKIE['lang']
+     * 6. Fallback language
      *
      * @var array
      */
@@ -241,7 +243,8 @@ class i18n {
      * 2. Language in $_GET['lang']
      * 3. Language in $_SESSION['lang']
      * 4. HTTP_ACCEPT_LANGUAGE
-     * 5. Fallback language
+     * 5. Language in $_COOKIE['lang']
+     * 6. Fallback language
      * Note: duplicate values are deleted.
      *
      * @return array with the user languages sorted by priority.
@@ -269,6 +272,11 @@ class i18n {
             foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
                 $userLangs[] = strtolower(substr($part, 0, 2));
             }
+        }
+
+        // 5th highest priority: COOKIE
+        if (isset($_COOKIE['lang'])) {
+          $userLangs[] = $_COOKIE['lang'];
         }
 
         // Lowest priority: fallback
