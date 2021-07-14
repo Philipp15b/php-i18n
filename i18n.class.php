@@ -313,7 +313,7 @@ class i18n {
         $userLangs2 = array();
         foreach ($userLangs as $key => $value) {
             // only allow a-z, A-Z and 0-9 and _ and -
-            if (preg_match('/^[a-zA-Z0-9_-]*$/', $value) === 1)
+            if (preg_match('/^[a-zA-Z0-9_-]+$/', $value) === 1)
                 $userLangs2[$key] = $value;
         }
 
