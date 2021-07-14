@@ -26,6 +26,15 @@ class i18n {
     protected $cachePath = './langcache/';
 
     /**
+     * Enable region variants
+     * Allow region variants such as "en-us", "en-gb" etc. If set to false, "en" will be provided.
+     * Defaults to false for backward compatibility.
+     *
+     * @var bool
+     */
+    protected $variantLang = false;
+
+    /**
      * Fallback language
      * This is the language which is used when there is no language file for all other user languages. It has the lowest priority.
      * Remember to create a language file for the fallback!!
@@ -189,6 +198,10 @@ class i18n {
         return $this->cachePath;
     }
 
+    public function getLangVariant($variantLang) {
+        return $this->$variantLang;
+    }
+
     public function getFallbackLang() {
         return $this->fallbackLang;
     }
@@ -201,6 +214,11 @@ class i18n {
     public function setCachePath($cachePath) {
         $this->fail_after_init();
         $this->cachePath = $cachePath;
+    }
+
+    public function setLangVariant($variantLang) {
+        $this->fail_after_init();
+        $this->variantLang = $variantLang;
     }
 
     public function setFallbackLang($fallbackLang) {
@@ -270,7 +288,13 @@ class i18n {
         // 4th highest priority: HTTP_ACCEPT_LANGUAGE
         if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $part) {
-                $userLangs[] = strtolower(substr($part, 0, 2));
+                $userLang = strtolower(explode(';q=', $part)[0]);
+
+                // Trim language variant section if not configured to allow
+                if (!$this->variantLang)
+                    $userLang = explode('-', $userLang)[0];
+                
+                $userLangs[] = $userLang;
             }
         }
 
