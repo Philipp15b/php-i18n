@@ -80,7 +80,7 @@ The possible settings are:
 <?php
 	$i18n->setCachePath('./tmp/cache');
 	$i18n->setFilePath('./langfiles/lang/lang_{LANGUAGE}.ini'); // language file path
-	$i18n->setLangVariant('false'); // trim region variant in language codes (e.g. en-us -> en)
+	$i18n->setLangVariant(false); // trim region variant in language codes (e.g. en-us -> en)
 	$i18n->setFallbackLang('en');
 	$i18n->setPrefix('I');
 	$i18n->setForcedLang('en'); // force english, even if another user language is available
