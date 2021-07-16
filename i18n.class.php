@@ -32,7 +32,7 @@ class i18n {
      *
      * @var bool
      */
-    protected $langVariantToggle = false;
+    protected $isLangVariantEnabled = false;
 
     /**
      * Fallback language
@@ -198,8 +198,8 @@ class i18n {
         return $this->cachePath;
     }
 
-    public function getLangVariantToggle() {
-        return $this->langVariantToggle;
+    public function getLangVariantEnabled() {
+        return $this->isLangVariantEnabled;
     }
 
     public function getFallbackLang() {
@@ -216,9 +216,9 @@ class i18n {
         $this->cachePath = $cachePath;
     }
 
-    public function setLangVariantToggle($langVariantToggle) {
+    public function setLangVariantEnabled($isLangVariantEnabled) {
         $this->fail_after_init();
-        $this->langVariantToggle = $langVariantToggle;
+        $this->isLangVariantEnabled = $isLangVariantEnabled;
     }
 
     public function setFallbackLang($fallbackLang) {
@@ -291,7 +291,7 @@ class i18n {
                 $userLang = strtolower(explode(';q=', $part)[0]);
 
                 // Trim language variant section if not configured to allow
-                if (!$this->langVariantToggle)
+                if (!$this->isLangVariantEnabled)
                     $userLang = explode('-', $userLang)[0];
                 
                 $userLangs[] = $userLang;
