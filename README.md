@@ -69,6 +69,7 @@ The possible settings are:
 
 * Language file path (default: `./lang/lang_{LANGUAGE}.ini`)
 * Cache file path (default: `./langcache/`)
+* Preserve language region variants: if set to true, region variants in language code strings such as en-us and en-gb will be preserved, otherwise will be trimmed to en (default: `false`)
 * The fallback language, if no one of the user languages is available (default: `en`)
 * A 'prefix', the compiled class name (default `L`)
 * A forced language, if you want to force a language (default: none)
@@ -79,6 +80,7 @@ The possible settings are:
 <?php
 	$i18n->setCachePath('./tmp/cache');
 	$i18n->setFilePath('./langfiles/lang/lang_{LANGUAGE}.ini'); // language file path
+	$i18n->setLangVariantEnabled(false); // trim region variant in language codes (e.g. en-us -> en)
 	$i18n->setFallbackLang('en');
 	$i18n->setPrefix('I');
 	$i18n->setForcedLang('en'); // force english, even if another user language is available
