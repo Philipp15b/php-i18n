@@ -165,13 +165,16 @@ class i18n {
 
             $compiled = "<?php class " . $this->prefix . " {\n"
             	. $this->compile($config)
-            	. 'public static function __callStatic($string, $args) {' . "\n"
-            	. '    return vsprintf(constant("self::" . $string), $args);'
-            	. "\n}\n}\n"
-            	. "function ".$this->prefix .'($string, $args=NULL) {'."\n"
-            	. '    $return = constant("'.$this->prefix.'::".$string);'."\n"
-            	. '    return $args ? vsprintf($return,$args) : $return;'
-            	. "\n}";
+              . $this->compileCallStatic()
+              . "\n"
+              . $this->compileFunction();
+            	// . 'public static function __callStatic($string, $args) {' . "\n"
+            	// . '    return vsprintf(constant("self::" . $string), $args);'
+            	// . "\n}\n}\n"
+            	// . "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+            	// . '    $return = constant("'.$this->prefix.'::".$string);'."\n"
+            	// . '    return $args ? vsprintf($return,$args) : $return;'
+            	// . "\n}";
 
 			if( ! is_dir($this->cachePath))
 				mkdir($this->cachePath, 0755, true);
@@ -184,6 +187,23 @@ class i18n {
         }
 
         require_once $this->cacheFilePath;
+    }
+
+    public function compileCallStatic()
+    {
+      return ''
+      . 'public static function __callStatic($string, $args) {' . "\n"
+      . '    return vsprintf(constant("self::" . $string), $args);'
+      . "\n}\n}";
+    }
+
+    public function compileFunction()
+    {
+      return ''
+      . "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+      . '    $return = constant("'.$this->prefix.'::".$string);'."\n"
+      . '    return $args ? vsprintf($return,$args) : $return;'
+      . "\n}";
     }
 
     public function isInitialized() {
@@ -293,7 +313,7 @@ class i18n {
                 // Trim language variant section if not configured to allow
                 if (!$this->isLangVariantEnabled)
                     $userLang = explode('-', $userLang)[0];
-                
+
                 $userLangs[] = $userLang;
             }
         }
