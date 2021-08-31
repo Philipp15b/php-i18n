@@ -168,13 +168,6 @@ class i18n {
               . $this->compileCallStatic()
               . "\n"
               . $this->compileFunction();
-            	// . 'public static function __callStatic($string, $args) {' . "\n"
-            	// . '    return vsprintf(constant("self::" . $string), $args);'
-            	// . "\n}\n}\n"
-            	// . "function ".$this->prefix .'($string, $args=NULL) {'."\n"
-            	// . '    $return = constant("'.$this->prefix.'::".$string);'."\n"
-            	// . '    return $args ? vsprintf($return,$args) : $return;'
-            	// . "\n}";
 
 			if( ! is_dir($this->cachePath))
 				mkdir($this->cachePath, 0755, true);
