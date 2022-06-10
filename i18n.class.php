@@ -169,6 +169,8 @@ class i18n {
             	. '    return vsprintf(constant("self::" . $string), $args);'
             	. "\n}\n}\n"
             	. "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+                . '    $string = str_replace(\'.\', \'_\', $string);'."\n"
+                . '    $string = strtolower($string);'."\n"
             	. '    $return = constant("'.$this->prefix.'::".$string);'."\n"
             	. '    return $args ? vsprintf($return,$args) : $return;'
             	. "\n}";
@@ -351,7 +353,7 @@ class i18n {
         $code = '';
         foreach ($config as $key => $value) {
             if (is_array($value)) {
-                $code .= $this->compile($value, $prefix . $key . $this->sectionSeparator);
+                $code .= $this->compile($value, $prefix . $key . str_replace('.', '_', $this->sectionSeparator));
             } else {
                 $fullName = $prefix . $key;
                 if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $fullName)) {

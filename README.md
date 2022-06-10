@@ -6,18 +6,19 @@ This is a simple i18n class for PHP. Nothing fancy, but fast, because it uses ca
 
 Some of its features:
 
-* Translation strings in `.ini`/`.properties`, `.json` or `.yaml` format
-* Caching
-* Simple API: `L::category_stringname`
-* Built-in support for [vsprintf](http://php.net/manual/en/function.vsprintf.php) formatting: `L::name($par1)`
-* Automatic user language detection
-* Simplicity ;)
+- Translation strings in `.ini`/`.properties`, `.json` or `.yaml` format
+- Case-insensitive keys
+- Caching
+- Simple API: `L::category_stringname`
+- Built-in support for [vsprintf](http://php.net/manual/en/function.vsprintf.php) formatting: `L::name($par1)`
+- Automatic user language detection
+- Simplicity ;)
 
 ## Requirements
 
-* Write permissions in cache directory
-* PHP 5.2 and above
-* PHP SPL extension (installed by default)
+- Write permissions in cache directory
+- PHP 5.2 and above
+- PHP SPL extension (installed by default)
 
 ## Setup
 
@@ -57,6 +58,7 @@ The files must be named according to the filePath setting, where '{LANGUAGE}' wi
 ```
 
 ### 3. Initialize the class
+
 ```php
 <?php
 	$i18n = new i18n();
@@ -67,14 +69,14 @@ The files must be named according to the filePath setting, where '{LANGUAGE}' wi
 
 The possible settings are:
 
-* Language file path (default: `./lang/lang_{LANGUAGE}.ini`)
-* Cache file path (default: `./langcache/`)
-* Preserve language region variants: if set to true, region variants in language code strings such as en-us and en-gb will be preserved, otherwise will be trimmed to en (default: `false`)
-* The fallback language, if no one of the user languages is available (default: `en`)
-* A 'prefix', the compiled class name (default `L`)
-* A forced language, if you want to force a language (default: none)
-* The section separator: this is used to seperate the sections in the language class. If you set the separator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
-* Merge keys from the fallback language into the current language
+- Language file path (default: `./lang/lang_{LANGUAGE}.ini`)
+- Cache file path (default: `./langcache/`)
+- Preserve language region variants: if set to true, region variants in language code strings such as en-us and en-gb will be preserved, otherwise will be trimmed to en (default: `false`)
+- The fallback language, if no one of the user languages is available (default: `en`)
+- A 'prefix', the compiled class name (default `L`)
+- A forced language, if you want to force a language (default: none)
+- The section separator: this is used to separate the sections in the language class. If you set the separator to `_abc_` you could access your localized strings via `L::category_abc_stringname` if you use categories in your ini. (default: `_`)
+- Merge keys from the fallback language into the current language
 
 ```php
 <?php
@@ -146,7 +148,10 @@ As you can see, you can also call the constant as a function. It will be formatt
 
 Also, like in the two last examples, a helper function with the same name as the class makes it easier to dynamically access the constants if ever needed.
 
-Thats it!
+When using the helper function a dot `.` may be used as the section separator, for example `echo L("category.somethingother");`.
+Note: this will not work when using the constant notation as in PHP the dot is not a valid character in constant names.
+
+That's it!
 
 ## How the user language detection works
 
