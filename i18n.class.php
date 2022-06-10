@@ -169,6 +169,7 @@ class i18n {
             	. '    return vsprintf(constant("self::" . $string), $args);'
             	. "\n}\n}\n"
             	. "function ".$this->prefix .'($string, $args=NULL) {'."\n"
+                . '    $string = str_replace(\'.\', \'_\', $string);' . "\n"
             	. '    $return = constant("'.$this->prefix.'::".$string);'."\n"
             	. '    return $args ? vsprintf($return,$args) : $return;'
             	. "\n}";
