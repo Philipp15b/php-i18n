@@ -148,8 +148,8 @@ As you can see, you can also call the constant as a function. It will be formatt
 
 Also, like in the two last examples, a helper function with the same name as the class makes it easier to dynamically access the constants if ever needed.
 
-When using the helper function a dot `.` may be as the section separator, for example `echo L("category.somethingother");`.
-Note this will not work when using the constant notation as in PHP the dot is not a valid character in constant names.
+When using the helper function a dot `.` may be used as the section separator, for example `echo L("category.somethingother");`.
+Note: this will not work when using the constant notation as in PHP the dot is not a valid character in constant names.
 
 That's it!
 
