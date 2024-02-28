@@ -31,6 +31,8 @@ To use this class, you need to create translation files with your translated str
 
 ```ini
 greeting = "Hello World!"
+last_modified = "Last modified: %1$s!"
+stringwithvars = "Hello %1$s! Last modified: %2$s!"
 
 [category]
 somethingother = "Something other..."
@@ -40,6 +42,8 @@ somethingother = "Something other..."
 
 ```ini
 greeting = "Hallo Welt!"
+last_modified = "Letzte Änderung: %1$s!"
+stringwithvars = "Hallo %1$s! Letzte Änderung: %2$s!"
 
 [category]
 somethingother = "Etwas anderes..."
@@ -132,6 +136,9 @@ In this example, we use the translation string seen in step 1.
 
 	echo L::last_modified("today");
 	// Could be: 'Last modified: today'
+	
+	echo L::stringwithvars("world", "today");
+	// Could be: 'Hello world! Last modified: today' 
 
 	echo L($string);
 	// Outputs a dynamically chosen static property

@@ -1,5 +1,7 @@
 {
 	"greeting": "Hallo Welt!",
+	"last_modified": "Letzte Änderung: %1$s!",
+	"stringswithvars": "Hallo %1$s! Letzte Änderung: %2$s!",
 	"category": {
 		"somethingother": "Etwas anderes..."
 	}

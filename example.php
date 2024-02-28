@@ -16,4 +16,12 @@
 
 <!-- Get some greetings -->
 <p>A greeting: <?php echo L::greeting; ?></p>
-<p>Something other: <?php echo L::category_somethingother; ?></p><!-- normally sections in the ini are seperated with an underscore like here. -->
+
+<!-- Get last modified date -->
+<p>Last modified: <?php echo L::last_modified("today"); ?></p>
+
+<!-- A string with 2 variables -->
+<p>A string with 2 variables: <?php echo L::stringwithvars("world", "today"); ?></p>
+
+<!-- normally sections in the ini are seperated with an underscore like here. -->
+<p>Something other: <?php echo L::category_somethingother; ?></p>
